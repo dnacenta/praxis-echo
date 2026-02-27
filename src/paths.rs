@@ -66,8 +66,8 @@ pub fn self_file() -> Result<PathBuf, String> {
     Ok(docs_dir()?.join("SELF.md"))
 }
 
-pub fn reflection_log_file() -> Result<PathBuf, String> {
-    Ok(docs_dir()?.join("REFLECTION-LOG.md"))
+pub fn session_log_file() -> Result<PathBuf, String> {
+    Ok(docs_dir()?.join("SESSION-LOG.md"))
 }
 
 // Archive directories
@@ -80,5 +80,5 @@ pub fn intent_queue_file() -> Result<PathBuf, String> {
     if let Ok(p) = std::env::var("PRAXIS_ECHO_QUEUE") {
         return Ok(PathBuf::from(p));
     }
-    Ok(PathBuf::from("/local-files/n8n-bridge/intent-queue.json"))
+    Ok(docs_dir()?.join("intent-queue.json"))
 }
