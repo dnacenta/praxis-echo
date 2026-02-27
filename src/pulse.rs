@@ -70,7 +70,7 @@ pub fn run() -> Result<(), String> {
         open_questions: scan.curiosity.active,
         observation_count: scan.reflections.total,
         active_policies: scan.praxis.active,
-        reflection_log_entries: scan.reflection_log_entries,
+        session_log_entries: scan.session_log_entries,
         document_hashes: scan.document_hashes.clone(),
     });
 
@@ -129,14 +129,14 @@ pub fn run() -> Result<(), String> {
     );
 
     // Reflection log
-    if scan.reflection_log_entries > 0 {
-        let date_range = match (&scan.reflection_log_oldest, &scan.reflection_log_newest) {
+    if scan.session_log_entries > 0 {
+        let date_range = match (&scan.session_log_oldest, &scan.session_log_newest) {
             (Some(old), Some(new)) => format!(" ({old} → {new})"),
             _ => String::new(),
         };
         println!(
             "  LOG:         {} entries{date_range}",
-            scan.reflection_log_entries
+            scan.session_log_entries
         );
     }
 

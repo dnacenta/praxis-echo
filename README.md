@@ -39,7 +39,7 @@ The agent sees its pipeline state at the start of every session — document cou
 | CURIOSITY.md | Open questions | 3 open | 7 |
 | REFLECTIONS.md | Crystallized observations | 15 entries | 20 |
 | PRAXIS.md | Active behavioral policies | 5 active | 10 |
-| REFLECTION-LOG.md | Session-level observations | 30 days | — |
+| SESSION-LOG.md | Session-level observations | 30 days | — |
 
 ## Install
 

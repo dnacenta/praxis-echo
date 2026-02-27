@@ -19,7 +19,7 @@ pub fn run() -> Result<(), String> {
         "explored_questions": scan.curiosity.explored,
         "reflections_total": scan.reflections.total,
         "active_policies": scan.praxis.active,
-        "reflection_log_entries": scan.reflection_log_entries,
+        "session_log_entries": scan.session_log_entries,
         "document_hashes": scan.document_hashes,
     });
 

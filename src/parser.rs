@@ -28,11 +28,11 @@ pub struct PipelineScan {
     pub curiosity: DocCounts,
     pub reflections: DocCounts,
     pub praxis: DocCounts,
-    pub reflection_log_entries: usize,
-    pub reflection_log_oldest: Option<String>,
-    pub reflection_log_newest: Option<String>,
+    pub session_log_entries: usize,
+    pub session_log_oldest: Option<String>,
+    pub session_log_newest: Option<String>,
     pub stale_thoughts: Vec<ThoughtEntry>,
-    pub _aging_questions: Vec<(String, String)>, // TODO: cross-reference with REFLECTION-LOG
+    pub _aging_questions: Vec<(String, String)>, // TODO: cross-reference with SESSION-LOG
     pub document_hashes: HashMap<String, String>,
 }
 
@@ -300,9 +300,9 @@ pub fn scan(
             graduated: praxis_retired,
             ..Default::default()
         },
-        reflection_log_entries: log_entries,
-        reflection_log_oldest: log_oldest,
-        reflection_log_newest: log_newest,
+        session_log_entries: log_entries,
+        session_log_oldest: log_oldest,
+        session_log_newest: log_newest,
         stale_thoughts,
         _aging_questions: Vec::new(),
         document_hashes: hashes,
@@ -339,7 +339,7 @@ pub fn scan_default() -> Result<PipelineScan, String> {
         &crate::paths::reflections_file()?,
         &crate::paths::praxis_file()?,
         &crate::paths::self_file()?,
-        &crate::paths::reflection_log_file()?,
+        &crate::paths::session_log_file()?,
     ))
 }
 

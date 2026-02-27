@@ -61,14 +61,14 @@ pub fn run() -> Result<(), String> {
     );
 
     // Reflection log
-    if scan.reflection_log_entries > 0 {
-        let range = match (&scan.reflection_log_oldest, &scan.reflection_log_newest) {
+    if scan.session_log_entries > 0 {
+        let range = match (&scan.session_log_oldest, &scan.session_log_newest) {
             (Some(old), Some(new)) => format!("  {DIM}({old} → {new}){RESET}"),
             _ => String::new(),
         };
         println!(
             "\n  {BOLD}Reflection Log{RESET}: {} entries{range}",
-            scan.reflection_log_entries
+            scan.session_log_entries
         );
     }
 

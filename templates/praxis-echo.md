@@ -9,7 +9,7 @@ Encounter → LEARNING.md → THOUGHTS.md → REFLECTIONS.md → SELF.md / PRAXI
              (capture)     (incubate)    (crystallize)     (integrate)
 ```
 
-CURIOSITY.md tracks open questions. REFLECTION-LOG.md records session-level observations.
+CURIOSITY.md tracks open questions. SESSION-LOG.md records session-level observations.
 
 ## What praxis-echo Does
 
@@ -32,7 +32,7 @@ At session end, `praxis-echo review` diffs session-start vs session-end pipeline
 | CURIOSITY.md | 3 open questions | 7 |
 | REFLECTIONS.md | 15 observations | 20 |
 | PRAXIS.md | 5 active policies | 10 |
-| REFLECTION-LOG | 30 days of entries | — |
+| SESSION-LOG | 30 days of entries | — |
 
 When a document hits its soft limit, you'll see a warning. At the hard limit, use `praxis-echo archive` to move overflow content to ~/archives/.
 

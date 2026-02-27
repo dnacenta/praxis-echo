@@ -28,7 +28,7 @@ pub struct Snapshot {
     pub open_questions: usize,
     pub observation_count: usize,
     pub active_policies: usize,
-    pub reflection_log_entries: usize,
+    pub session_log_entries: usize,
     #[serde(default)]
     pub document_hashes: HashMap<String, String>,
 }

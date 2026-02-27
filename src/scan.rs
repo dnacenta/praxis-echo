@@ -26,10 +26,10 @@ pub fn run(format: &str) -> Result<(), String> {
                     "active": scan.praxis.active,
                     "retired": scan.praxis.graduated,
                 },
-                "reflection_log": {
-                    "entries": scan.reflection_log_entries,
-                    "oldest": scan.reflection_log_oldest,
-                    "newest": scan.reflection_log_newest,
+                "session_log": {
+                    "entries": scan.session_log_entries,
+                    "oldest": scan.session_log_oldest,
+                    "newest": scan.session_log_newest,
                 },
                 "stale_thoughts": scan.stale_thoughts.iter().map(|t| {
                     serde_json::json!({
@@ -69,13 +69,13 @@ pub fn run(format: &str) -> Result<(), String> {
             println!("    Active:  {}", scan.praxis.active);
             println!("    Retired: {}", scan.praxis.graduated);
 
-            if scan.reflection_log_entries > 0 {
-                println!("  REFLECTION-LOG.md");
-                println!("    Entries: {}", scan.reflection_log_entries);
-                if let Some(ref old) = scan.reflection_log_oldest {
+            if scan.session_log_entries > 0 {
+                println!("  SESSION-LOG.md");
+                println!("    Entries: {}", scan.session_log_entries);
+                if let Some(ref old) = scan.session_log_oldest {
                     println!("    Oldest:  {old}");
                 }
-                if let Some(ref new) = scan.reflection_log_newest {
+                if let Some(ref new) = scan.session_log_newest {
                     println!("    Newest:  {new}");
                 }
             }
