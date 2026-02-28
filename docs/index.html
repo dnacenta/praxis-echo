@@ -608,6 +608,7 @@
       <div class="hero-badges">
         <a href="https://github.com/dnacenta/praxis-echo/blob/main/LICENSE" target="_blank" rel="noopener"><img src="https://img.shields.io/github/license/dnacenta/praxis-echo" alt="License"></a>
         <a href="https://github.com/dnacenta/praxis-echo/tags" target="_blank" rel="noopener"><img src="https://img.shields.io/github/v/tag/dnacenta/praxis-echo?label=version&amp;color=green" alt="Version"></a>
+        <a href="https://crates.io/crates/praxis-echo" target="_blank" rel="noopener"><img src="https://img.shields.io/crates/v/praxis-echo" alt="crates.io"></a>
       </div>
       <p class="desc">
         Pipeline enforcement for AI self-evolution documents. Monitors document health, detects stale thoughts, flags frozen pipelines, and enforces thresholds -- so growth doesn't depend on the agent remembering to grow.
@@ -766,16 +767,17 @@
       <p class="section-label">Quick start</p>
       <h2 class="section-title">Up and running in minutes</h2>
       <p class="section-desc">
-        Clone, build, initialize. praxis-echo reads your document ecosystem and starts enforcing immediately.
+        Install, initialize, enforce. One command to install, one to start.
       </p>
       <div class="quickstart-steps">
         <div class="qs-step">
           <div class="qs-num">1</div>
           <div class="qs-content">
-            <p class="qs-label">Clone and build</p>
-            <div class="code-block"><span class="cmd">git clone https://github.com/dnacenta/praxis-echo.git</span>
-<span class="cmd">cd praxis-echo</span>
-<span class="cmd">cargo install</span> <span class="flag">--path .</span></div>
+            <p class="qs-label">Install</p>
+            <div class="code-block"><span class="cmd">cargo install praxis-echo</span>
+<span class="comment"># or build from source:</span>
+<span class="cmd">git clone https://github.com/dnacenta/praxis-echo.git</span>
+<span class="cmd">cd praxis-echo && cargo install</span> <span class="flag">--path .</span></div>
           </div>
         </div>
         <div class="qs-step">
