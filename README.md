@@ -1,7 +1,7 @@
 # praxis-echo
 
 [![CI](https://github.com/dnacenta/praxis-echo/actions/workflows/ci.yml/badge.svg?branch=development)](https://github.com/dnacenta/praxis-echo/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/github/license/dnacenta/praxis-echo)](LICENSE)
+[![License: AGPL-3.0](https://img.shields.io/github/license/dnacenta/praxis-echo)](LICENSE)
 [![Version](https://img.shields.io/github/v/tag/dnacenta/praxis-echo?label=version&color=green)](https://github.com/dnacenta/praxis-echo/tags)
 [![crates.io](https://img.shields.io/crates/v/praxis-echo)](https://crates.io/crates/praxis-echo)
 [![Rust](https://img.shields.io/badge/rust-1.80%2B-orange)](https://rustup.rs/)
@@ -143,4 +143,4 @@ praxis-echo nudge "emergence in complex systems" --when +2h --priority high
 
 ## License
 
-MIT
+AGPL-3.0
