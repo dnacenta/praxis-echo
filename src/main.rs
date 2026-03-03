@@ -1,16 +1,6 @@
-mod archive;
-mod checkpoint;
-mod init;
-mod nudge;
-mod parser;
-mod paths;
-mod pulse;
-mod review;
-mod scan;
-mod state;
-mod status;
-
 use clap::{Parser, Subcommand};
+
+use praxis_echo::{archive, checkpoint, init, nudge, pulse, review, scan, status};
 
 #[derive(Parser)]
 #[command(
