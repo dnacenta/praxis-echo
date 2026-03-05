@@ -502,6 +502,194 @@ pub fn list_archives(
 }
 
 // ---------------------------------------------------------------------------
+// Trait implementation: PipelineMonitor
+// ---------------------------------------------------------------------------
+
+use echo_system_types::monitoring as shared;
+
+/// Concrete implementation of the PipelineMonitor trait.
+///
+/// pulse-null core creates this and stores it as `Arc<dyn PipelineMonitor>`.
+/// All existing functions are preserved for standalone CLI use.
+pub struct PraxisMonitor;
+
+impl PraxisMonitor {
+    pub fn new() -> Self {
+        Self
+    }
+}
+
+impl Default for PraxisMonitor {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+// --- Internal ↔ Shared type conversions ---
+
+fn shared_threshold_status(s: &ThresholdStatus) -> shared::ThresholdStatus {
+    match s {
+        ThresholdStatus::Green => shared::ThresholdStatus::Green,
+        ThresholdStatus::Yellow => shared::ThresholdStatus::Yellow,
+        ThresholdStatus::Red => shared::ThresholdStatus::Red,
+    }
+}
+
+fn shared_doc_health(d: &DocumentHealth) -> shared::DocumentHealth {
+    shared::DocumentHealth {
+        count: d.count,
+        soft: d.soft,
+        hard: d.hard,
+        status: shared_threshold_status(&d.status),
+    }
+}
+
+fn shared_pipeline_health(h: &PipelineHealth) -> shared::PipelineHealth {
+    shared::PipelineHealth {
+        learning: shared_doc_health(&h.learning),
+        thoughts: shared_doc_health(&h.thoughts),
+        curiosity: shared_doc_health(&h.curiosity),
+        reflections: shared_doc_health(&h.reflections),
+        praxis: shared_doc_health(&h.praxis),
+        warnings: h.warnings.clone(),
+    }
+}
+
+fn internal_thresholds(t: &shared::PipelineThresholds) -> Thresholds {
+    Thresholds {
+        learning_soft: t.learning_soft,
+        learning_hard: t.learning_hard,
+        thoughts_soft: t.thoughts_soft,
+        thoughts_hard: t.thoughts_hard,
+        curiosity_soft: t.curiosity_soft,
+        curiosity_hard: t.curiosity_hard,
+        reflections_soft: t.reflections_soft,
+        reflections_hard: t.reflections_hard,
+        praxis_soft: t.praxis_soft,
+        praxis_hard: t.praxis_hard,
+    }
+}
+
+fn internal_health(d: &shared::DocumentHealth) -> DocumentHealth {
+    DocumentHealth {
+        count: d.count,
+        soft: d.soft,
+        hard: d.hard,
+        status: match d.status {
+            shared::ThresholdStatus::Green => ThresholdStatus::Green,
+            shared::ThresholdStatus::Yellow => ThresholdStatus::Yellow,
+            shared::ThresholdStatus::Red => ThresholdStatus::Red,
+        },
+    }
+}
+
+fn internal_pipeline_health(h: &shared::PipelineHealth) -> PipelineHealth {
+    PipelineHealth {
+        learning: internal_health(&h.learning),
+        thoughts: internal_health(&h.thoughts),
+        curiosity: internal_health(&h.curiosity),
+        reflections: internal_health(&h.reflections),
+        praxis: internal_health(&h.praxis),
+        warnings: h.warnings.clone(),
+    }
+}
+
+impl shared::PipelineMonitor for PraxisMonitor {
+    fn calculate(
+        &self,
+        root_dir: &Path,
+        thresholds: &shared::PipelineThresholds,
+    ) -> shared::PipelineHealth {
+        let internal = internal_thresholds(thresholds);
+        let health = calculate(root_dir, &internal);
+        shared_pipeline_health(&health)
+    }
+
+    fn render_for_prompt(
+        &self,
+        health: &shared::PipelineHealth,
+        sessions_frozen: u32,
+        freeze_threshold: u32,
+    ) -> String {
+        let internal = internal_pipeline_health(health);
+        render(&internal, sessions_frozen, freeze_threshold)
+    }
+
+    fn counts_from_health(&self, health: &shared::PipelineHealth) -> shared::DocumentCounts {
+        shared::DocumentCounts {
+            learning: health.learning.count,
+            thoughts: health.thoughts.count,
+            curiosity: health.curiosity.count,
+            reflections: health.reflections.count,
+            praxis: health.praxis.count,
+        }
+    }
+
+    fn load_state(&self, root_dir: &Path) -> shared::PipelineState {
+        let internal = PipelineState::load(root_dir);
+        shared::PipelineState {
+            last_updated: internal.last_updated,
+            session_count: internal.session_count,
+            sessions_without_movement: internal.sessions_without_movement,
+            last_counts: shared::DocumentCounts {
+                learning: internal.last_counts.learning,
+                thoughts: internal.last_counts.thoughts,
+                curiosity: internal.last_counts.curiosity,
+                reflections: internal.last_counts.reflections,
+                praxis: internal.last_counts.praxis,
+            },
+        }
+    }
+
+    fn save_state(
+        &self,
+        root_dir: &Path,
+        state: &shared::PipelineState,
+    ) -> Result<(), Box<dyn std::error::Error>> {
+        let internal = PipelineState {
+            last_updated: state.last_updated.clone(),
+            session_count: state.session_count,
+            sessions_without_movement: state.sessions_without_movement,
+            last_counts: DocumentCounts {
+                learning: state.last_counts.learning,
+                thoughts: state.last_counts.thoughts,
+                curiosity: state.last_counts.curiosity,
+                reflections: state.last_counts.reflections,
+                praxis: state.last_counts.praxis,
+            },
+        };
+        internal.save(root_dir)
+    }
+
+    fn check_and_archive(
+        &self,
+        root_dir: &Path,
+        thresholds: &shared::PipelineThresholds,
+        health: &shared::PipelineHealth,
+    ) -> Vec<String> {
+        let internal_t = internal_thresholds(thresholds);
+        let internal_h = internal_pipeline_health(health);
+        check_and_archive(root_dir, &internal_t, &internal_h)
+    }
+
+    fn list_archives(
+        &self,
+        root_dir: &Path,
+        document: Option<&str>,
+    ) -> Result<Vec<String>, Box<dyn std::error::Error>> {
+        list_archives(root_dir, document)
+    }
+
+    fn archive_by_name(
+        &self,
+        root_dir: &Path,
+        document: &str,
+    ) -> Result<String, Box<dyn std::error::Error>> {
+        archive_document_by_name(root_dir, document)
+    }
+}
+
+// ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
 
