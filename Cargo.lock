@@ -139,8 +139,8 @@ dependencies = [
 
 [[package]]
 name = "echo-system-types"
-version = "0.2.0"
-source = "git+https://github.com/dnacenta/echo-system-types?tag=v0.2.0#acbadc847e4af646025d67b968330c07083a0d96"
+version = "0.3.0"
+source = "git+https://github.com/dnacenta/echo-system-types?tag=v0.3.0#ad901031f50fe6f0bef5a9476bbc97a778d00124"
 dependencies = [
  "serde",
  "serde_json",
@@ -309,7 +309,7 @@ checksum = "04744f49eae99ab78e0d5c0b603ab218f515ea8cfe5a456d7629ad883a3b6e7d"
 
 [[package]]
 name = "praxis-echo"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "clap",
  "dirs",
