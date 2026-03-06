@@ -3,17 +3,6 @@
 //! Tracks document pipeline health (LEARNING → THOUGHTS → REFLECTIONS → SELF/PRAXIS),
 //! enforces thresholds, detects stale items, and provides session-level diffs.
 //! Designed for integration with echo-system as a core plugin.
-//!
-//! # Usage as a library
-//!
-//! ```no_run
-//! use praxis_echo::PraxisEcho;
-//!
-//! # fn run() {
-//! let praxis = PraxisEcho::from_default().expect("pipeline system");
-//! let health = praxis.health();
-//! # }
-//! ```
 
 pub mod archive;
 pub mod checkpoint;
@@ -28,9 +17,13 @@ pub mod scan;
 pub mod state;
 pub mod status;
 
+use std::any::Any;
+use std::future::Future;
 use std::path::PathBuf;
+use std::pin::Pin;
 
-use echo_system_types::{HealthStatus, SetupPrompt};
+use echo_system_types::plugin::{Plugin, PluginContext, PluginResult, PluginRole};
+use echo_system_types::{HealthStatus, PluginMeta, SetupPrompt};
 
 /// The praxis-echo plugin. Manages document pipeline enforcement.
 pub struct PraxisEcho {
@@ -67,7 +60,7 @@ impl PraxisEcho {
     }
 
     /// Report health status based on pipeline state.
-    pub fn health(&self) -> HealthStatus {
+    fn health_check(&self) -> HealthStatus {
         if !self.claude_dir.exists() {
             return HealthStatus::Down("config directory not found".into());
         }
@@ -96,7 +89,7 @@ impl PraxisEcho {
     }
 
     /// Configuration prompts for the echo-system init wizard.
-    pub fn setup_prompts() -> Vec<SetupPrompt> {
+    fn get_setup_prompts() -> Vec<SetupPrompt> {
         vec![
             SetupPrompt {
                 key: "claude_dir".into(),
@@ -113,5 +106,59 @@ impl PraxisEcho {
                 default: Some("~/".into()),
             },
         ]
+    }
+}
+
+/// Factory function — creates a fully initialized plugin.
+pub async fn create(
+    config: &serde_json::Value,
+    ctx: &PluginContext,
+) -> Result<Box<dyn Plugin>, Box<dyn std::error::Error + Send + Sync>> {
+    let claude_dir = config
+        .get("claude_dir")
+        .and_then(|v| v.as_str())
+        .map(PathBuf::from)
+        .unwrap_or_else(|| ctx.entity_root.join("monitoring"));
+
+    let docs_dir = config
+        .get("docs_dir")
+        .and_then(|v| v.as_str())
+        .map(PathBuf::from)
+        .unwrap_or_else(|| ctx.entity_root.clone());
+
+    Ok(Box::new(PraxisEcho::new(claude_dir, docs_dir)))
+}
+
+impl Plugin for PraxisEcho {
+    fn meta(&self) -> PluginMeta {
+        PluginMeta {
+            name: "praxis-echo".into(),
+            version: env!("CARGO_PKG_VERSION").into(),
+            description: "Pipeline enforcement and behavioral policies".into(),
+        }
+    }
+
+    fn role(&self) -> PluginRole {
+        PluginRole::Pipeline
+    }
+
+    fn start(&mut self) -> PluginResult<'_> {
+        Box::pin(async { Ok(()) })
+    }
+
+    fn stop(&mut self) -> PluginResult<'_> {
+        Box::pin(async { Ok(()) })
+    }
+
+    fn health(&self) -> Pin<Box<dyn Future<Output = HealthStatus> + Send + '_>> {
+        Box::pin(async move { self.health_check() })
+    }
+
+    fn setup_prompts(&self) -> Vec<SetupPrompt> {
+        Self::get_setup_prompts()
+    }
+
+    fn as_any(&self) -> &dyn Any {
+        self
     }
 }
